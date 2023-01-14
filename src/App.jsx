@@ -4,15 +4,20 @@ import './App.css'
 import UsersForm from './components/UsersForm';
 import UsersList from './components/UsersList';
 import '../src/css/styles.css'
+import Loading from './components/Loading';
 
 function App() {
   
   const [usersList, setUsersList] = useState([]);
   const [usersSelected, setUsersSelected] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   
   useEffect(() => {
     axios.get('https://users-crud.academlo.tech/users/')
-    .then(res => setUsersList(res.data))
+    .then(res => {
+      setUsersList(res.data)
+      setIsLoading(false);
+    })
   }, [])
 
   
@@ -33,8 +38,14 @@ function App() {
   
   return (
     <div className="App">
-      <UsersForm getUsersList={getUsersList} usersSelected={usersSelected} selectUsers={selectUsers}/>
-      <UsersList usersList={usersList} deleteUsers={deleteUsers} selectUsers={selectUsers}/>
+      {isLoading ? (
+        <Loading/>
+      ) : (
+        <>
+          <UsersForm getUsersList={getUsersList} usersSelected={usersSelected} selectUsers={selectUsers}/>
+          <UsersList usersList={usersList} deleteUsers={deleteUsers} selectUsers={selectUsers}/>
+        </>
+      )}
     </div>
   )
 }
